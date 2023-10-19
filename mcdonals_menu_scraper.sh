@@ -1,19 +1,33 @@
 #!/bin/bash
 
 clear 
+result=""
+raw=""
 
+process_raw_input(){
+echo " the 1 is $1 and 2 is $raw"
+result=$(echo "$raw" | sed "s/$1\">//g")
+result=$(echo "$result" | sed "s/<\/span>//g")
+result=$(echo "$result" | sed "s/amp;//g")
+}
+
+curl_url(){
+echo " the 1 is $1 and 2 is $2"
+raw=`curl -s https://mcdonalds.com.pk/full-menu/$1 | grep -Po "$2.*?</span>"`
+echo $raw
+}
 
 rm -rf menu
 echo "scraping the Mcdonals site ..."
-raw=`curl -s https://mcdonalds.com.pk/full-menu/ | grep -Po "category-title.*?</span>"`
-echo $raw
+curl_url " " "category-title"
+
 
 
 echo "processing the raw input ..."
 #removing useless values in result
-result=$(echo "$raw" | sed "s/category-title\">//g")
-result=$(echo "$result" | sed "s/<\/span>//g")
-result=$(echo "$result" | sed "s/amp;//g")
+
+process_raw_input "category-title" $raw
+echo $result
 
 
 #processing the names 
@@ -53,14 +67,14 @@ done
 for file in $filenames;do
 
 echo "scraping the $file menu ..."
-raw=`curl -s https://mcdonalds.com.pk/full-menu/$file/ | grep -Po "categories-item-name.*?</span>"`
+curl_url "$file/" "categories-item-name"
 #echo $raw
 
 echo "processing the raw input ..."
 #removing useless values in result
-result=$(echo "$raw" | sed "s/categories-item-name\">//g")
-result=$(echo "$result" | sed "s/<\/span>//g")
-result=$(echo "$result" | sed "s/amp;//g")
+process_raw_input "categories-item-name" $raw
+
+
 #adding line numbers manually 
 result=$(echo "$result"| awk '{printf "%d) %s\n", NR, $0}')
 
