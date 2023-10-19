@@ -28,7 +28,7 @@ filenames=$(echo "$filenames" | sed "s/&/and/g")
 #preparing string for futher scraping
 
 lowercase_string=$(echo "$filenames" | tr '[:upper:]' '[:lower:]')
-filenames=$(echo "$lowercase_string" | tr 'é' 'e')
+filenames=$(echo "$lowercase_string" | iconv -f utf-8 -t ascii//TRANSLIT)
 echo $lowercase_string
 
 echo "creating files ..."
@@ -59,11 +59,11 @@ raw=`curl -s https://mcdonalds.com.pk/full-menu/$file/ | grep -Po "categories-it
 echo "processing the raw input ..."
 #removing useless values in result
 result=$(echo "$raw" | sed "s/categories-item-name\">//g")
-result=$(echo "$result" | sed "s/<\/span>/,/g")
+result=$(echo "$result" | sed "s/<\/span>//g")
 result=$(echo "$result" | sed "s/amp;//g")
-
 echo "writing to file ..."
-echo $result > $file
+echo -e "$result"
+echo -e "$result" > $file
 echo -e "\n\n"
 
 done
