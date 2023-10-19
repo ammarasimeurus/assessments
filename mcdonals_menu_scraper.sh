@@ -3,6 +3,7 @@
 clear 
 result=""
 raw=""
+url="https://mcdonalds.com.pk/full-menu/"
 
 process_raw_input(){
 echo " the 1 is $1 and 2 is $raw"
@@ -13,7 +14,7 @@ result=$(echo "$result" | sed "s/amp;//g")
 
 curl_url(){
 echo " the 1 is $1 and 2 is $2"
-raw=`curl -s https://mcdonalds.com.pk/full-menu/$1 | grep -Po "$2.*?</span>"`
+raw=`curl -s $url$1 | grep -Po "$2.*?</span>"`
 echo $raw
 }
 
