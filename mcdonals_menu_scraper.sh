@@ -1,5 +1,8 @@
 #!/bin/bash
 
+clear 
+
+
 rm -rf menu
 echo "scraping the Mcdonals site ..."
 raw=`curl -s https://mcdonalds.com.pk/full-menu/ | grep -Po "category-title.*?</span>"`
@@ -59,9 +62,8 @@ result=$(echo "$raw" | sed "s/categories-item-name\">//g")
 result=$(echo "$result" | sed "s/<\/span>/,/g")
 result=$(echo "$result" | sed "s/amp;//g")
 
-
+echo "writing to file ..."
 echo $result > $file
-#processing the names 
+echo -e "\n\n"
 
 done
-
