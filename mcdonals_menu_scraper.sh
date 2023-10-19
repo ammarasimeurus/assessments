@@ -61,6 +61,9 @@ echo "processing the raw input ..."
 result=$(echo "$raw" | sed "s/categories-item-name\">//g")
 result=$(echo "$result" | sed "s/<\/span>//g")
 result=$(echo "$result" | sed "s/amp;//g")
+#adding line numbers manually 
+result=$(echo "$result"| awk '{printf "%d) %s\n", NR, $0}')
+
 echo "writing to file ..."
 echo -e "$result"
 echo -e "$result" > $file
